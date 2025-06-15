@@ -1,34 +1,39 @@
 <script lang="ts">
 	import '../app.css';
-	import { slide } from 'svelte/transition'
-	import MenuButton from '$lib/components/menu-button.svelte';
+	import { slide } from 'svelte/transition';
+	import MenuButton from '$lib/components/buttons/menu-button.svelte';
 	import type { LayoutProps } from './$types';
-
+	
 	let menuOpen: boolean = $state(false);
 	let loggedIn: boolean = $state(false);
-
-	let menuLinks: {name: string, link: string}[] = [{name: 'Home', link: ''}, {name: 'My Workouts', link: 'workouts'}, {name: 'Calendar', link: 'calendar'}, {name: 'About', link: 'about'}];
-
+	
+	let menuLinks: { name: string; link: string }[] = [
+		{ name: 'Home', link: '' },
+		{ name: 'My Workouts', link: 'workouts' },
+		{ name: 'Calendar', link: 'calendar' },
+		{ name: 'About', link: 'about' }
+	];
+	
 	let { children, data }: LayoutProps = $props();
-
+	
 	$effect(() => {
 		loggedIn = data.user ? true : false;
 	});
-
- 	function clickOutsideMenu(node: Node) {
+	
+	function clickOutsideMenu(node: Node) {
 		function handleClickOutsideMenu(event: Event) {
-			if(node.contains(event.target as Node)) {
+			if (node.contains(event.target as Node)) {
 				menuOpen = false;
 			}
 		}
-
+	
 		$effect(() => {
 			node.addEventListener('click', handleClickOutsideMenu);
-
+	
 			return () => {
 				node.removeEventListener('click', handleClickOutsideMenu);
-			}
-		})
+			};
+		});
 	}
 </script>
 
@@ -45,7 +50,7 @@
 		{#if menuOpen}
 			<div class="bg-slate-950 absolute w-full z-100">
 				{#each menuLinks as menuLink}
-					<div transition:slide|global class="text-lg border-b border-solid border-white">
+					<div transition:slide|global class="text-2xl border-b border-solid border-white">
 						<a href="/{menuLink.link}" onclick={() => menuOpen = !menuOpen} class="size-full px-4 py-3 block">
 							{menuLink.name}
 						</a>
@@ -53,7 +58,7 @@
 				{/each}
 			</div>
 		{/if}
-		<div class="relative">
+		<div class="relative z-50 px-5">
 			{@render children()}
 		</div>
 	</div>
@@ -70,7 +75,7 @@
 		{#if menuOpen}
 			<div class="bg-slate-950 absolute w-full z-100">
 				{#each menuLinks as menuLink}
-					<div transition:slide|global class="text-lg border-b border-solid border-white">
+					<div transition:slide|global class="text-2xl border-b border-solid border-white">
 						<a href="/{menuLink.link}" onclick={() => menuOpen = !menuOpen} class="size-full px-4 py-3 block">
 							{menuLink.name}
 						</a>
@@ -79,7 +84,7 @@
 			</div>
 		{/if}
 
-		<div class="relative">
+		<div class="relative z-50 px-5">
 			{@render children()}
 		</div>
 	</div>

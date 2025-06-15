@@ -5,7 +5,7 @@
 	let { form }: { form: ActionData } = $props();
 </script>
 
-<div class="px-5">
+<div class="">
   <h1 class="text-3xl text-center pt-4">Login</h1>
   <form method="post" action="?/login" use:enhance>
     <label class="block text-xl py-3">
@@ -24,7 +24,7 @@
       />
     </label>
     <div class="justify-between items-center flex ">
-      <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+      <button class="bg-blue-800 text-white px-6 py-2 rounded-md"
       >Login</button>
       <a href="/register">New? Register Here</a>
     </div>
