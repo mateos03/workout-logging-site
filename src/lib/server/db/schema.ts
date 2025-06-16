@@ -22,7 +22,7 @@ export const workout = pgTable("workout", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => user.id),
   created: timestamp("created").notNull(),
-  workoutTagId: integer("workout_tag_id"),
+  workoutTagId: integer("workout_tag_id").references(() => workoutTag.id),
   rating: integer("rating"),
   notes: text("notes"),
   finished: boolean("finished"),
@@ -36,8 +36,8 @@ export const workoutTag = pgTable("workout_tag", {
 
 export const set = pgTable("sets", {
   id: serial("id").primaryKey(),
-  workoutId: integer("workout_id").notNull(),
-  exerciseId: integer("exercise_id").notNull(),
+  workoutId: integer("workout_id").notNull().references(() => workout.id),
+  exerciseId: integer("exercise_id").notNull().references(() => exercise.id),
   setNumber: integer("set_number").notNull(),
   reps: integer("reps").notNull(),
   weight: integer("weight").notNull(),
@@ -59,18 +59,11 @@ export const tag = pgTable("tag", {
 
 
 export const exerciseTag = pgTable("exercise_tags", {
-  exerciseId: integer("exercise_id"),
-  tagId: integer("tag_id"),
+  exerciseId: integer("exercise_id").references(() => exercise.id),
+  tagId: integer("tag_id").references(() => tag.id),
 }, (table) => [
   primaryKey({ columns: [table.exerciseId, table.tagId] }),
 ]);
-
-export const test = pgTable("test_table", {
-  id: serial("id").primaryKey(),
-  name: text("name"),
-  number: integer("number"),
-  description: text("description"),
-});
 
 export type Session = typeof session.$inferSelect;
 export type NewSession = typeof session.$inferInsert;
@@ -95,6 +88,3 @@ export type NewTag = typeof tag.$inferInsert;
 
 export type ExerciseTag = typeof exerciseTag.$inferSelect;
 export type NewExerciseTag = typeof exerciseTag.$inferInsert;
-
-export type Test = typeof test.$inferSelect;
-export type newTest = typeof test.$inferInsert;
