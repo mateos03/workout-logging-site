@@ -42,7 +42,7 @@ export const actions = {
       console.log(error);
     }
   },
-  change_tag_name: async ({ request, locals }) => {
+  change_tag_name: async ({ request }) => {
     const data = await request.formData();
 
     const tagName = generalizeString(data.get("tag_name"));
