@@ -1,5 +1,6 @@
 import { db } from "$lib/server/db"
 import { tag, type NewTag, type Tag } from "$lib/server/db/schema"
+import { getAllData } from "$lib/server/get.js";
 import { isNameUnique, generalizeString } from "$lib/server/inputvalidation.js";
 import { fail } from "@sveltejs/kit";
 import { eq } from "drizzle-orm";
@@ -7,7 +8,7 @@ import { eq } from "drizzle-orm";
 let pubTags: Tag[] = [];
 
 export const load = async ({ locals }) => {
-  const tags: Tag[] = await db.select().from(tag).where(eq(tag.userId, locals.user!.id)).orderBy(tag.name);
+  const tags: Tag[] = await getAllData(tag, locals.user!.id, tag.name);
 
   pubTags = tags;
 

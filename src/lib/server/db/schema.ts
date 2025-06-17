@@ -59,8 +59,8 @@ export const tag = pgTable("tag", {
 
 
 export const exerciseTag = pgTable("exercise_tags", {
-  exerciseId: integer("exercise_id").references(() => exercise.id),
-  tagId: integer("tag_id").references(() => tag.id),
+  exerciseId: integer("exercise_id").notNull().references(() => exercise.id),
+  tagId: integer("tag_id").notNull().references(() => tag.id),
 }, (table) => [
   primaryKey({ columns: [table.exerciseId, table.tagId] }),
 ]);
