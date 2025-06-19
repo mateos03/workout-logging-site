@@ -22,16 +22,10 @@ export const workout = pgTable("workout", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => user.id),
   created: timestamp("created").notNull(),
-  workoutTagId: integer("workout_tag_id").references(() => workoutTag.id),
+  tagId: integer("tag_id").references(() => tag.id),
   rating: integer("rating"),
   notes: text("notes"),
   finished: boolean("finished"),
-});
-
-export const workoutTag = pgTable("workout_tag", {
-  id: serial("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => user.id),
-  name: text("name").notNull(),
 });
 
 export const set = pgTable("sets", {
@@ -73,9 +67,6 @@ export type NewUser = typeof user.$inferInsert;
 
 export type Workout = typeof workout.$inferSelect;
 export type NewWorkout = typeof workout.$inferInsert;
-
-export type WorkoutTag = typeof workoutTag.$inferSelect;
-export type NewWorkoutTag = typeof workoutTag.$inferInsert;
 
 export type Set = typeof set.$inferSelect;
 export type NewSet = typeof set.$inferInsert;

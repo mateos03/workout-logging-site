@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/index.js'
 import { exercise, exerciseTag, tag, type Exercise, type NewExerciseTag } from '$lib/server/db/schema.js'
 import { getAllFromUserId } from '$lib/server/get.js';
-import { generalizeString, isNameUnique } from '$lib/server/inputvalidation';
+import { generalizeString, isNameUnique } from '$lib/index';
 import { fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm'
 

@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/index.js'
 import { exercise, exerciseTag, tag, type Exercise, type NewExercise, type NewExerciseTag } from '$lib/server/db/schema'
 import { getAllFromUserId } from '$lib/server/get.js';
-import { generalizeString, isNameUnique } from '$lib/server/inputvalidation';
+import { generalizeString, isNameUnique } from '$lib/index';
 import { fail } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {

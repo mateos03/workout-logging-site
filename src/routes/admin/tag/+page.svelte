@@ -72,22 +72,22 @@
         }
       }}>
         {#if changeSelected.selected == tag.id && changeSelected.change}
-          <div class="flex items-center">
-            <input type="text" name="tag_name" value={tag.name} class="w-1/3 bg-slate-600 text-xl p-0 rounded-sm"/>
-            <button formaction="?/change_tag_name" name="tag_id" value={tag.id} class="w-1/3 border rounded-md p-1 bg-green-800 mx-2">Confirm</button>
+          <input type="text" name="tag_name" value={tag.name} class="h-9 bg-slate-800 text-2xl p-0 px-1 rounded-sm w-full"/>
+          <div class="flex items-center justify-between gap-x-3 py-1 pt-2">
+            <button formaction="?/change_tag_name" name="tag_id" value={tag.id} class="w-1/2 text-lg border rounded-md p-1 py-1.5 bg-green-800">Confirm</button>
             <button type="button" onclick={() => {
               changeSelected.change = false;
               if(form){
                 form.change_tag_name_message = "";
               }
-            }} class="w-1/3 border rounded-md bg-red-800 p-1">Cancel</button>
+            }} class="w-1/2 text-lg border rounded-md bg-red-800 p-1 py-1.5">Cancel</button>
           </div>
           <p class="text-red-500">{form?.change_tag_name_message ?? ""}</p>
         {:else}
-          <div class="flex items-center">
-            <div class="text-xl w-1/3">{tag.name}</div>
-            <button type="button" class="w-1/3 border rounded-md p-1 bg-slate-800 mx-2" onclick={() => handleChangeTagClick(tag.id)}>Change Name</button>
-            <button formaction="?/delete_tag" name="tag_id" value={tag.id} onclick={(event) => confirmDelete(event, tag.name)} class="w-1/3 border rounded-md bg-red-800 p-1">Delete</button>
+          <div class="text-2xl h-9">{tag.name}</div>
+          <div class="flex items-center justify-between gap-x-3 py-1 pt-2">
+            <button type="button" class="w-1/2 text-lg border rounded-md p-1 py-1.5 bg-slate-800" onclick={() => handleChangeTagClick(tag.id)}>Change Name</button>
+            <button formaction="?/delete_tag" name="tag_id" value={tag.id} onclick={(event) => confirmDelete(event, tag.name)} class="w-1/2 text-lg border rounded-md bg-red-800 p-1 py-1.5">Delete</button>
           </div>
         {/if}
       </form>

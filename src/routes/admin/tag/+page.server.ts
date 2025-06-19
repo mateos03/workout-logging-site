@@ -1,14 +1,14 @@
 import { db } from "$lib/server/db"
 import { tag, type NewTag, type Tag } from "$lib/server/db/schema"
-import { getAllData } from "$lib/server/get.js";
-import { isNameUnique, generalizeString } from "$lib/server/inputvalidation.js";
+import { getAllFromUserId } from "$lib/server/get.js";
+import { isNameUnique, generalizeString } from "$lib/index";
 import { fail } from "@sveltejs/kit";
 import { eq } from "drizzle-orm";
 
 let pubTags: Tag[] = [];
 
 export const load = async ({ locals }) => {
-  const tags: Tag[] = await getAllData(tag, locals.user!.id, tag.name);
+  const tags: Tag[] = await getAllFromUserId(tag, locals.user!.id, tag.name);
 
   pubTags = tags;
 
