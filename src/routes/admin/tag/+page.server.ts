@@ -1,5 +1,5 @@
 import { db } from "$lib/server/db"
-import { tag, type NewTag, type Tag } from "$lib/server/db/schema"
+import { exerciseTag, tag, type NewTag, type Tag } from "$lib/server/db/schema"
 import { getAllFromUserId } from "$lib/server/get.js";
 import { isNameUnique, generalizeString } from "$lib/index";
 import { fail } from "@sveltejs/kit";
@@ -26,6 +26,12 @@ export const actions = {
       });
     }
 
+    if(!isNameUnique(pubTags, tagName)){
+      return fail(400, {
+        add_tag_message: "Tag already exists"
+      });
+    }
+
     try{
       await db.insert(tag).values({ name: tagName, userId: locals.user!.id } as NewTag)
     } catch(error){
@@ -38,6 +44,7 @@ export const actions = {
     const tagId = Number(data.get("tag_id"));
     
     try{
+      await db.delete(exerciseTag).where(eq(exerciseTag.tagId, tagId));
       await db.delete(tag).where(eq(tag.id, tagId));
     } catch(error){
       console.log(error);

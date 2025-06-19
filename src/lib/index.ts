@@ -16,3 +16,9 @@ export function capitalize(input: string){
   }
   return input.charAt(0).toUpperCase() + input.slice(1);
 }
+
+export function confirmDelete(event: Event, str: string){
+  if(!confirm(str)){
+    event.preventDefault();
+  }
+}

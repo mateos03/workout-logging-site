@@ -10,6 +10,8 @@
 	let menuLinks: { name: string; link: string }[] = [
 		{ name: 'Home', link: '' },
 		{ name: 'My Workouts', link: 'workouts' },
+		{ name: 'Exercises', link: 'exercises' },
+		{ name: 'Tags', link: 'tags' },
 		{ name: 'Calendar', link: 'calendar' },
 		{ name: 'About', link: 'about' }
 	];

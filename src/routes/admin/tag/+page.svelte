@@ -1,23 +1,19 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { confirmDelete } from '$lib';
 
   const { data, form } = $props();
 
   let changeSelected: { change: boolean, selected: number } = $state({ change: false, selected: 0 });
   let newTagMenuOpen: boolean = $state(false);
   let addTagButtonVisible: boolean = $state(true);
+  let searchInput: string = $state("");
 
   function handleChangeTagClick(tagId: number){
     if(changeSelected.selected == tagId){
       changeSelected.change = !changeSelected.change;
     } else {
       changeSelected = { change: true, selected: tagId }
-    }
-  }
-
-  function confirmDelete(event: Event, tagName: string){
-    if(!confirm(`Are you sure you want to delete tag ${tagName}?`)){
-      event.preventDefault();
     }
   }
 
@@ -40,16 +36,7 @@
     {/if}
   </div>
   {#if newTagMenuOpen}
-    <form class="py-3 border-b" method="POST" use:enhance={() => {
-      return async ({ result, update }) => {
-        if(result.type === "success"){
-          update();
-          changeAddTagVisibility();
-        } else {
-          update();
-        }
-      }
-    }}>
+    <form class="py-3 border-b" method="POST" use:enhance>
       <label class="text-xl mb-2 block" for="tag-name-input">New Tag Name:</label>
       <div class="flex items-center justify-end gap-x-2">
         <input id="tag-name-input" class="bg-slate-600 rounded-md w-1/2" type="text" name="tag_name"/>
@@ -59,8 +46,11 @@
       <p class="text-red-500">{form?.add_tag_message ?? ""}</p>
     </form>
   {/if}
+  <div class="border-b">
+    <input bind:value={searchInput} placeholder="Search..." class="bg-slate-800 rounded-full px-5 w-full my-2 text-lg"/>
+  </div>
   <div>
-    {#each data.tags as tag}
+    {#each data.tags.filter((tag) => tag.name.toLowerCase().includes(searchInput.toLowerCase())) as tag}
       <form method="POST" class="py-3 border-b" use:enhance={() => {
         return async ({result, update}) => {
           if(result.type === "success"){
@@ -87,7 +77,7 @@
           <div class="text-2xl h-9">{tag.name}</div>
           <div class="flex items-center justify-between gap-x-3 py-1 pt-2">
             <button type="button" class="w-1/2 text-lg border rounded-md p-1 py-1.5 bg-slate-800" onclick={() => handleChangeTagClick(tag.id)}>Change Name</button>
-            <button formaction="?/delete_tag" name="tag_id" value={tag.id} onclick={(event) => confirmDelete(event, tag.name)} class="w-1/2 text-lg border rounded-md bg-red-800 p-1 py-1.5">Delete</button>
+            <button formaction="?/delete_tag" name="tag_id" value={tag.id} onclick={(event) => confirmDelete(event, `Are you sure you want to delete ${tag.name}`)} class="w-1/2 text-lg border rounded-md bg-red-800 p-1 py-1.5">Delete</button>
           </div>
         {/if}
       </form>
