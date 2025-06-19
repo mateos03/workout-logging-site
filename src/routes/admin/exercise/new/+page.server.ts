@@ -1,11 +1,11 @@
 import { db } from '$lib/server/db/index.js'
 import { exercise, exerciseTag, tag, type Exercise, type NewExercise, type NewExerciseTag } from '$lib/server/db/schema'
-import { getAllData } from '$lib/server/get.js';
+import { getAllFromUserId } from '$lib/server/get.js';
 import { generalizeString, isNameUnique } from '$lib/server/inputvalidation';
 import { fail } from '@sveltejs/kit';
 
 export const load = async ({ locals }) => {
-  const tags = await getAllData(tag, locals.user!.id, tag.name);
+  const tags = await getAllFromUserId(tag, locals.user!.id, tag.name);
 
   return { tags }
 }
@@ -35,7 +35,7 @@ export const actions = {
       });
     }
 
-    const exercises: Exercise[] = await getAllData(exercise, locals.user!.id);
+    const exercises: Exercise[] = await getAllFromUserId(exercise, locals.user!.id);
     if(!isNameUnique(exercises, exerciseName)){
       return fail(400, {
         message: "Exercise already exists"
