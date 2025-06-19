@@ -1,13 +1,14 @@
 <script lang="ts">
 	import '../app.css';
-	import { slide } from 'svelte/transition';
-	import MenuButton from '$lib/components/buttons/menu-button.svelte';
-	import type { LayoutProps } from './$types';
+	import { scale, slide } from 'svelte/transition';
+	import MenuButton from '$lib/components/buttons/MenuButton.svelte';
+  import CircleButton from '$lib/components/buttons/CircleButton.svelte';
 	
 	let menuOpen: boolean = $state(false);
+	let newMenuOpen: boolean = $state(true);
 	let loggedIn: boolean = $state(false);
 	
-	let menuLinks: { name: string; link: string }[] = [
+	let menuLinks: { name: string, link: string }[] = [
 		{ name: 'Home', link: '' },
 		{ name: 'My Workouts', link: 'workouts' },
 		{ name: 'Exercises', link: 'exercises' },
@@ -15,8 +16,14 @@
 		{ name: 'Calendar', link: 'calendar' },
 		{ name: 'About', link: 'about' }
 	];
+
+	let newMenuLinks: { name: string, link: string }[] = [
+		{ name: 'New Workout', link: 'workouts/new' },
+		{ name: 'Add Calories', link: '' },
+		{ name: 'Add Bodyweight', link: ''}
+	];
 	
-	let { children, data }: LayoutProps = $props();
+	let { children, data } = $props();
 	
 	$effect(() => {
 		loggedIn = data.user ? true : false;
@@ -60,8 +67,20 @@
 				{/each}
 			</div>
 		{/if}
+		{#if newMenuOpen}
+			<div class="absolute w-full bottom-0 z-98">
+				<div transition:scale class="border border-white rounded-4xl bg-slate-950 m-5 origin-bottom-right">
+					{#each newMenuLinks as newMenuLink}
+						<a href="/{newMenuLink.link}" class="block {newMenuLink != newMenuLinks[newMenuLinks.length - 1] ? "border-b" : ""} text-3xl p-3 px-5">{newMenuLink.name}</a>
+					{/each}
+				</div>
+			</div>
+		{/if}
 		<div class="relative z-50 px-5">
 			{@render children()}
+		</div>
+		<div class="absolute z-99 right-0 bottom-0 m-5">
+			<CircleButton {newMenuOpen} changeNewMenuOpen={() => newMenuOpen = !newMenuOpen}/>
 		</div>
 	</div>
 {:else}
