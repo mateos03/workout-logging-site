@@ -9,7 +9,7 @@ import { eq } from 'drizzle-orm'
 export const load = async ({ params, locals }) => {
   const exerciseResult = await db.select().from(exercise).where(eq(exercise.id, Number(params.exercise_id)));
   if(exerciseResult[0].userId != locals.user!.id){
-    throw redirect(300, "/");
+    throw redirect(302, "/");
   }
 
   const exerciseTagResult = await db.select().from(exerciseTag).where(eq(exerciseTag.exerciseId, Number(params.exercise_id)));

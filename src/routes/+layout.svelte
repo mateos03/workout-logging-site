@@ -5,7 +5,7 @@
   import CircleButton from '$lib/components/buttons/CircleButton.svelte';
 	
 	let menuOpen: boolean = $state(false);
-	let newMenuOpen: boolean = $state(true);
+	let newMenuOpen: boolean = $state(false);
 	let loggedIn: boolean = $state(false);
 	
 	let menuLinks: { name: string, link: string }[] = [
@@ -15,12 +15,6 @@
 		{ name: 'Tags', link: 'tags' },
 		{ name: 'Calendar', link: 'calendar' },
 		{ name: 'About', link: 'about' }
-	];
-
-	let newMenuLinks: { name: string, link: string }[] = [
-		{ name: 'New Workout', link: 'workouts/new' },
-		{ name: 'Add Calories', link: '' },
-		{ name: 'Add Bodyweight', link: ''}
 	];
 	
 	let { children, data } = $props();
@@ -70,9 +64,11 @@
 		{#if newMenuOpen}
 			<div class="absolute w-full bottom-0 z-98">
 				<div transition:scale class="border border-white rounded-4xl bg-slate-950 m-5 origin-bottom-right">
-					{#each newMenuLinks as newMenuLink}
-						<a href="/{newMenuLink.link}" class="block {newMenuLink != newMenuLinks[newMenuLinks.length - 1] ? "border-b" : ""} text-3xl p-3 px-5">{newMenuLink.name}</a>
-					{/each}
+					<form method="POST" action="/api/create-workout">
+						<button class="block border-b w-full text-3xl text-left p-3 px-5">New Workout</button>
+					</form>
+					<button class="block border-b w-full text-3xl text-left p-3 px-5">Add Calories</button>
+					<button class="block w-full text-3xl text-left p-3 px-5">Add bodyweight</button>
 				</div>
 			</div>
 		{/if}

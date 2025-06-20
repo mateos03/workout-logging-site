@@ -1,5 +1,7 @@
-import { redirect } from "@sveltejs/kit";
+import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { LayoutServerLoad } from "./$types";
+import { db } from "$lib/server/db";
+import { workout, type NewWorkout } from "$lib/server/db/schema";
 
 export const load: LayoutServerLoad = async ({ url, locals }) => {
   const URLs = ["/about", "/login", "/register"]
