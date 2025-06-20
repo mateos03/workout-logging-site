@@ -42,8 +42,8 @@
 
 {#if loggedIn}
 	<div class="bg-gray-900 min-h-screen text-white">
-		<div use:clickOutsideMenu class="absolute size-full"></div>
-		<div class="py-4 px-4 bg-slate-950 flex items-center justify-between border-b border-solid border-white">
+		<div use:clickOutsideMenu class="fixed size-full"></div>
+		<div class="py-4 px-4 fixed w-full z-101 bg-slate-950 flex items-center justify-between border-b border-solid border-white">
 			<MenuButton {menuOpen} changeMenuOpen={() => menuOpen = !menuOpen}></MenuButton>
 			<a href="/profile" onclick={() => menuOpen = false}>
 				<img src="/profile.png" alt="Profile button" class="h-10 w-auto relative">
@@ -51,7 +51,7 @@
 		</div>
 
 		{#if menuOpen}
-			<div class="bg-slate-950 absolute w-full z-100">
+			<div class="bg-slate-950 fixed w-full z-100 pt-[72px]">
 				{#each menuLinks as menuLink}
 					<div transition:slide|global class="text-2xl border-b border-solid border-white">
 						<a href="/{menuLink.link}" onclick={() => menuOpen = !menuOpen} class="size-full px-4 py-3 block">
@@ -62,7 +62,7 @@
 			</div>
 		{/if}
 		{#if newMenuOpen}
-			<div class="absolute w-full bottom-0 z-98">
+			<div class="fixed w-full bottom-0 z-98">
 				<div transition:scale class="border border-white rounded-4xl bg-slate-950 m-5 origin-bottom-right">
 					<form method="POST" action="/api/create-workout">
 						<button class="block border-b w-full text-3xl text-left p-3 px-5">New Workout</button>
@@ -72,16 +72,16 @@
 				</div>
 			</div>
 		{/if}
-		<div class="relative z-50 px-5">
+		<div class="relative z-50 px-5 pt-[72px]">
 			{@render children()}
 		</div>
-		<div class="absolute z-99 right-0 bottom-0 m-5">
+		<div class="fixed z-99 right-0 bottom-0 m-5">
 			<CircleButton {newMenuOpen} changeNewMenuOpen={() => newMenuOpen = !newMenuOpen}/>
 		</div>
 	</div>
 {:else}
 	<div class="bg-gray-900 min-h-screen text-white">
-		<div use:clickOutsideMenu class="absolute size-full"></div>
+		<div use:clickOutsideMenu class="fixed size-full"></div>
 		<div class="py-4 px-4 bg-slate-950 flex items-center justify-between border-b border-solid border-white">
 			<MenuButton {menuOpen} changeMenuOpen={() => menuOpen = !menuOpen}></MenuButton>
 			<a href="/login" onclick={() => menuOpen = false}>
@@ -90,7 +90,7 @@
 		</div>
 
 		{#if menuOpen}
-			<div class="bg-slate-950 absolute w-full z-100">
+			<div class="bg-slate-950 fixed w-full z-100">
 				{#each menuLinks as menuLink}
 					<div transition:slide|global class="text-2xl border-b border-solid border-white">
 						<a href="/{menuLink.link}" onclick={() => menuOpen = !menuOpen} class="size-full px-4 py-3 block">
