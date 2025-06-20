@@ -25,7 +25,7 @@ export const workout = pgTable("workout", {
   tagId: integer("tag_id").references(() => tag.id),
   rating: integer("rating"),
   notes: text("notes"),
-  finished: boolean("finished"),
+  finished: boolean("finished").default(false),
 });
 
 export const set = pgTable("sets", {
