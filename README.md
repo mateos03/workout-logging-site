@@ -1,38 +1,23 @@
-# sv
+# Workout Logging Website
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+### Welcome! This is the code for my personal workout-tracker. It is very much still work in progress, but it is being worked on.
 
-## Creating a project
+---
 
-If you're seeing this, you've probably already done this step. Congrats!
+### For this project I use:
 
-```bash
-# create a new project in the current directory
-npx sv create
+- SvelteKit - Someone mentioned it to me and I wanted to try it out. Been a positive experience up to this point.
+- PostgreSQL - Wanted to go with an SQL-database as that is what I am used to and I enjoy the structure it gives.
+- Tailwind - Very new to tailwind and css in general, but it has gone pretty good.
+- Drizzle ORM - Awesome ORM with really good documentation, easy to use and comes pre-configured (optional) when starting a Svelte project. 
+- Lucia - Used for authentication on the website. Was super easy to set up with svelte and Drizzle. Had no problems. 
 
-# create a new project in my-app
-npx sv create my-app
-```
+---
 
-## Developing
+### How to set up locally:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- Clone the repository.
+- In the root folder run:  ```npm run dev```
+- In docker start a postgres database with this command: ```docker run --name postgres-db -p5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres```
+- Create or go to your ```.env``` file and paste this: ```DATABASE_URL='postgresql://postgres:mysecretpassword@localhost:5432/postgres'```
+- There is admin functionality implemented. If you want to use it, register an account with the username: ```adminuser```. 
