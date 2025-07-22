@@ -21,7 +21,7 @@
       <div class="flex justify-between items-center mt-2">
         <div class="text-2xl">{workout.created.toLocaleString("en-US", { weekday: "long" })}</div>
         <div class="text-xl"> 
-          {#if workout.finished}
+          {#if !workout.finished}
             <span class="text-yellow-500">In progress</span>
           {:else}
             <span class="text-slate-400">Finished</span>

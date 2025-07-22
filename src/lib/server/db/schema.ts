@@ -25,17 +25,22 @@ export const workout = pgTable("workout", {
   tagId: integer("tag_id").references(() => tag.id),
   rating: integer("rating"),
   notes: text("notes"),
-  finished: boolean("finished").default(false),
+  finished: boolean("finished").notNull().default(false),
+});
+
+export const workoutExercise = pgTable("workout_exercises", {
+  id: serial("id").primaryKey(),
+  workoutId: integer("workout_id").notNull().references(() => workout.id),
+  exerciseId: integer("exercise_id").notNull().references(() => exercise.id),
+  notes: text("notes")
 });
 
 export const set = pgTable("sets", {
   id: serial("id").primaryKey(),
-  workoutId: integer("workout_id").notNull().references(() => workout.id),
-  exerciseId: integer("exercise_id").notNull().references(() => exercise.id),
+  workoutExerciseId: integer("workout_exercise_id").notNull().references(() => workoutExercise.id),
   setNumber: integer("set_number").notNull(),
   reps: integer("reps").notNull(),
   weight: integer("weight").notNull(),
-  notes: text("notes"),
 });
 
 export const exercise = pgTable("exercise", {
