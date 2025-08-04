@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db/index.js'
-import { exercise, set, workoutExercise } from '$lib/server/db/schema.js'
+import { exercise, set, workout, workoutExercise } from '$lib/server/db/schema.js'
 import { fail, redirect } from '@sveltejs/kit';
+import { and } from 'drizzle-orm';
 import { eq } from 'drizzle-orm'
 
 export const load = async ({ params }) => {
@@ -58,5 +59,35 @@ export const actions = {
     }
 
     throw(redirect(303, `/workouts/${workoutId}`));
-  }
+  },
+  move_set_up: async ({ request, params }) => {
+    const data = await request.formData();
+
+    const setId = Number(data.get("set_id"));
+    const setNumber = Number(data.get("set_number"));
+
+    try{
+      await Promise.all([
+        db.update(set).set({ setNumber: setNumber - 1 }).where(eq(set.id, setId)),
+        db.update(set).set({ setNumber: setNumber }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, setNumber - 1)))
+      ]);
+    } catch(error){
+      console.log(error);
+    }
+  },
+  move_set_down: async ({ request, params }) => {
+    const data = await request.formData();
+
+    const setId = Number(data.get("set_id"));
+    const setNumber = Number(data.get("set_number"));
+
+    try{
+      await Promise.all([
+        db.update(set).set({ setNumber: setNumber + 1 }).where(eq(set.id, setId)),
+        db.update(set).set({ setNumber: setNumber }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, setNumber + 1)))
+      ]);
+    } catch(error){
+      console.log(error);
+    }
+  },
 }
