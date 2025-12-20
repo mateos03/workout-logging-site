@@ -64,12 +64,13 @@ export const actions = {
     const data = await request.formData();
 
     const setId = Number(data.get("set_id"));
-    const setNumber = Number(data.get("set_number"));
+    const setIndex = Number(data.get("set_index"));
+    const prevSetNumber = Number(data.get("prev_set_number"));
 
     try{
       await Promise.all([
-        db.update(set).set({ setNumber: setNumber - 1 }).where(eq(set.id, setId)),
-        db.update(set).set({ setNumber: setNumber }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, setNumber - 1)))
+        db.update(set).set({ setNumber: setIndex - 1 }).where(eq(set.id, setId)),
+        db.update(set).set({ setNumber: setIndex }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, prevSetNumber)))
       ]);
     } catch(error){
       console.log(error);
@@ -79,13 +80,25 @@ export const actions = {
     const data = await request.formData();
 
     const setId = Number(data.get("set_id"));
-    const setNumber = Number(data.get("set_number"));
+    const setIndex = Number(data.get("set_index"));
+    const nextSetNumber = Number(data.get("next_set_number"))
 
     try{
       await Promise.all([
-        db.update(set).set({ setNumber: setNumber + 1 }).where(eq(set.id, setId)),
-        db.update(set).set({ setNumber: setNumber }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, setNumber + 1)))
+        db.update(set).set({ setNumber: setIndex + 1 }).where(eq(set.id, setId)),
+        db.update(set).set({ setNumber: setIndex }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, nextSetNumber)))
       ]);
+    } catch(error){
+      console.log(error);
+    }
+  },
+  delete_set: async ({ request }) => {
+    const data = await request.formData();
+
+    const setId = Number(data.get("set_id"));
+
+    try{
+      await db.delete(set).where(eq(set.id, setId));
     } catch(error){
       console.log(error);
     }

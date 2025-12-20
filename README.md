@@ -17,7 +17,9 @@
 ### How to set up locally:
 
 - Clone the repository.
+- Run: ```npm install```
 - In the root folder run:  ```npm run dev```
 - In docker start a postgres database with this command: ```docker run --name postgres-db -p5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres```
 - Create or go to your ```.env``` file and paste this: ```DATABASE_URL='postgresql://postgres:mysecretpassword@localhost:5432/postgres'```
+- Push DB Schema to the database with: ```npx drizzle-kit push```
 - There is admin functionality implemented. If you want to use it, register an account with the username: ```adminuser```. 

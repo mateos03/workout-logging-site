@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ locals }) => {
       headers: { Location: `/workouts/${result[0].id}` }
     });
   } catch (error) {
-    return new Response(JSON.stringify({ message: "Something went wrong." }), {
+    return new Response(JSON.stringify({ message: error }), {
       status: 400,
       headers: { "Content-Type": "application/json" }
     });

@@ -14,7 +14,7 @@
     originalSets = (data.sets.map((sets) => ({ ...sets })));
   });
 
-  //Remove up or down for the bottom and top set
+  //fix ordering after deleting set in middle causing a jump from for example 0 to 2 with no setNumber 1.
 </script>
 
 <div>
@@ -52,19 +52,25 @@
               {:else}
                 <div class="flex justify-start items-center w-1/2 gap-x-2">
                   <input hidden name="set_id" value={set.id}>
-                  <input hidden name="set_number" value={i}/>
-                  <button formaction="?/move_set_up" class="w-1/2 p-1.5 border-2 border-slate-700 bg-slate-800 rounded-md text-xl flex items-center justify-center" aria-label="Up">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
-                      <polyline points="4 17 12 7 20 17" />
-                    </svg>
-                  </button>
-                  <button formaction="?/move_set_down" class="w-1/2 p-1.5 border-2 border-slate-700 bg-slate-800 rounded-md text-xl flex items-center justify-center" aria-label="Down">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
-                      <polyline points="4 7 12 18 20 7" />
-                    </svg>
-                  </button>              
+                  <input hidden name="set_index" value={i}/>
+                  {#if i != 0}  
+                    <input hidden name="next_set_number" value={allSets[i+1]?.setNumber ?? 0}>
+                    <button formaction="?/move_set_up" class="{i == allSets.length-1 ? "w-full" : "w-1/2"} p-1.5 border-2 border-slate-700 bg-slate-800 rounded-md text-xl flex items-center justify-center" aria-label="Up">
+                      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                        <polyline points="4 17 12 7 20 17" />
+                      </svg>
+                    </button>
+                  {/if}
+                  {#if i != allSets.length-1}  
+                    <input hidden name="prev_set_number" value={allSets[i-1]?.setNumber ?? 0}>
+                    <button formaction="?/move_set_down" class="{i == 0 ? "w-full" : "w-1/2"} p-1.5 border-2 border-slate-700 bg-slate-800 rounded-md text-xl flex items-center justify-center" aria-label="Down">
+                      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
+                        <polyline points="4 7 12 18 20 7" />
+                      </svg>
+                    </button>              
+                  {/if}
                 </div>
-                <button class="w-1/2 p-1 border-2 border-red-800 bg-red-900 rounded-md text-2xl">Delete</button>
+                <button onclick={(event) => confirmDelete(event, "Are you sure you want to delete this set?")} formaction="?/delete_set" class="w-1/2 p-1 border-2 border-red-800 bg-red-900 rounded-md text-2xl">Delete</button>
               {/if}
             </div>
           </form>
@@ -78,7 +84,7 @@
           <div class="w-1/3">Reps</div>
         </div>
         {#each allSets as set, i}
-          <div class="flex justify-start items-center py-2 text-4xl text-center {set.setNumber != 0 ? "border-t border-slate-500" : ""}">
+          <div class="flex justify-start items-center py-4 text-5xl text-center {set.setNumber != 0 ? "border-t border-slate-500" : ""}">
             <div class="w-1/3">{i + 1}</div>
             <div class="w-1/3">{set.weight}</div>
             <div class="w-1/3">{set.reps}</div>
