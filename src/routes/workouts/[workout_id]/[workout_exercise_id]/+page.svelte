@@ -5,16 +5,14 @@
   let { data, form } = $props();
 
   let originalSets = $state(data.sets.map((sets) => ({ ...sets })));
-  let allSets = $state(data.sets);
-  let setNumber = $derived<number>(allSets.length);
+  let allSets = $state([...data.sets]);
+  let setNumber = $derived<number>(data.sets[data.sets.length - 1].setNumber + 1);
   let editSets = $state<boolean>(false);
 
   $effect(() => {
-    allSets = data.sets;
+    allSets = data.sets.map((set, i) => ({...set, setNumber: i+1}));
     originalSets = (data.sets.map((sets) => ({ ...sets })));
   });
-
-  //fix ordering after deleting set in middle causing a jump from for example 0 to 2 with no setNumber 1.
 </script>
 
 <div>
@@ -38,7 +36,7 @@
         {#each allSets as set, i}
           <form method="POST" use:enhance>
             <div class="flex justify-start items-center py-2 gap-x-3 text-4xl text-center {set.setNumber != 0 ? "border-t border-slate-500" : ""}">
-              <div class="w-1/3">{i + 1}</div>
+              <div class="w-1/3">{set.setNumber}</div>
               <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={set.weight}>
               <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={set.reps}/>
             </div>
@@ -85,7 +83,7 @@
         </div>
         {#each allSets as set, i}
           <div class="flex justify-start items-center py-4 text-5xl text-center {set.setNumber != 0 ? "border-t border-slate-500" : ""}">
-            <div class="w-1/3">{i + 1}</div>
+            <div class="w-1/3">{set.setNumber}</div>
             <div class="w-1/3">{set.weight}</div>
             <div class="w-1/3">{set.reps}</div>
           </div>
