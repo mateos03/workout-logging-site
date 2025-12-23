@@ -3,6 +3,11 @@
 # Initial setup / start (pull image if needed)
 setup:
 	docker compose up -d
+# Only local fix instead of healtcheck in the compose file
+	sleep 3
+	npx drizzle-kit push --force
+	npx tsx src/lib/server/db/seed.ts
+	npm run dev
 
 # Alias for setup (optional but convenient)
 start: setup
