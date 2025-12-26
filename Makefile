@@ -10,7 +10,9 @@ setup:
 	npm run dev
 
 # Alias for setup (optional but convenient)
-start: setup
+start: 
+	docker compose start
+	npm run dev
 
 # Stop containers without deleting data
 stop:

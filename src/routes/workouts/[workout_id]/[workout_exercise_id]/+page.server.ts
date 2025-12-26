@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db/index.js'
-import { exercise, set, workout, workoutExercise } from '$lib/server/db/schema.js'
+import { exercise, set, workoutExercise } from '$lib/server/db/schema.js'
 import { fail, redirect } from '@sveltejs/kit';
 import { and } from 'drizzle-orm';
 import { eq } from 'drizzle-orm'

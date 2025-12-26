@@ -4,7 +4,7 @@
 
   let { data, form } = $props();
 
-  let originalSets = $state(data.sets.map((sets) => ({ ...sets })));
+  let originalSets = $derived(data.sets.map((sets) => ({ ...sets })));
   let allSets = $state([...data.sets]);
   let setNumber = $derived<number>(data.sets[data.sets.length - 1].setNumber + 1);
   let editSets = $state<boolean>(false);
@@ -33,12 +33,12 @@
           <div class="w-1/3">Weight</div>
           <div class="w-1/3">Reps</div>
         </div>
-        {#each allSets as set, i}
+        {#each allSets as set, i (set.id)}
           <form method="POST" use:enhance>
             <div class="flex justify-start items-center py-2 gap-x-3 text-4xl text-center {set.setNumber != 0 ? "border-t border-slate-500" : ""}">
               <div class="w-1/3">{set.setNumber}</div>
-              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={set.weight}>
-              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={set.reps}/>
+              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={allSets[i].weight}>
+              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={allSets[i].reps}/>
             </div>
             <div class="flex justify-start items-center w-full mb-2 gap-x-3">
               {#if set.weight != originalSets.find((x) => x.id == set.id)?.weight || set.reps != originalSets.find((x) => x.id == set.id)?.reps}
