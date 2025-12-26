@@ -1,18 +1,23 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { confirmDelete } from '$lib';
+  import type { Set } from '$lib/server/db/schema.js';
 
   let { data, form } = $props();
 
   let originalSets = $derived(data.sets.map((sets) => ({ ...sets })));
-  let allSets = $state([...data.sets]);
-  let setNumber = $derived<number>(data.sets[data.sets.length - 1].setNumber + 1);
+  let allSets = $state(data.sets.map((set, i) => ({...set, setNumber: i+1})));
+  let setNumber = $derived<number>(data.sets[data.sets.length - 1]?.setNumber + 1 || 1);
   let editSets = $state<boolean>(false);
 
   $effect(() => {
     allSets = data.sets.map((set, i) => ({...set, setNumber: i+1}));
-    originalSets = (data.sets.map((sets) => ({ ...sets })));
   });
+
+  function isEdited(set: Set){
+    const originalSet = originalSets.find((x) => x.id == set.id);
+    if(originalSet) return originalSet.weight != set.weight || originalSet.reps != set.reps;
+  }
 </script>
 
 <div>
@@ -33,26 +38,30 @@
           <div class="w-1/3">Weight</div>
           <div class="w-1/3">Reps</div>
         </div>
-        {#each allSets as set, i (set.id)}
+        {#each allSets as sset, i (sset.id)}
           <form method="POST" use:enhance>
-            <div class="flex justify-start items-center py-2 gap-x-3 text-4xl text-center {set.setNumber != 0 ? "border-t border-slate-500" : ""}">
-              <div class="w-1/3">{set.setNumber}</div>
-              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={allSets[i].weight}>
-              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" type="text" bind:value={allSets[i].reps}/>
+            <input hidden name="set_id" value={sset.id}>
+            <input hidden name="set_index" value={i}/>
+            <div class="flex justify-start items-center py-2 gap-x-3 text-4xl text-center {sset.setNumber != 0 ? "border-t border-slate-500" : ""}">
+              <div class="w-1/3">{sset.setNumber}</div>
+              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" name="set_weight" type="text" bind:value={sset.weight}>
+              <input class="w-1/3 bg-slate-800 rounded-sm p-1 text-4xl text-center" name="set_reps" type="text" bind:value={sset.reps}/>
             </div>
             <div class="flex justify-start items-center w-full mb-2 gap-x-3">
-              {#if set.weight != originalSets.find((x) => x.id == set.id)?.weight || set.reps != originalSets.find((x) => x.id == set.id)?.reps}
-                <button class="bg-green-900 border-2 border-green-800 w-1/2 rounded-md text-2xl p-1">Save</button>
+              {#if isEdited(allSets[i])}
+                <button formaction="?/save_edited_sets" class="bg-green-900 border-2 border-green-800 w-1/2 rounded-md text-2xl p-1">Save</button>
                 <button type="button" class="w-1/2 p-1 border-2 border-slate-700 bg-slate-800 rounded-md text-2xl" onclick={() => {
-                  set.weight = originalSets[i].weight;
-                  set.reps = originalSets[i].reps;
+                  sset.weight = originalSets[i].weight;
+                  sset.reps = originalSets[i].reps;
                 }}>Cancel</button>
               {:else}
                 <div class="flex justify-start items-center w-1/2 gap-x-2">
-                  <input hidden name="set_id" value={set.id}>
-                  <input hidden name="set_index" value={i}/>
+                  <input hidden name="current_set_number" value={allSets[i].setNumber ?? 0}>
+                  <input hidden name="prev_set_number" value={allSets[i-1]?.setNumber ?? 0}>
+                  <input hidden name="prev_set_id" value={allSets[i-1]?.id ?? 0}>
+                  <input hidden name="next_set_number" value={allSets[i+1]?.setNumber ?? 0}>
+                  <input hidden name="next_set_id" value={allSets[i+1]?.id ?? 0}>
                   {#if i != 0}  
-                    <input hidden name="next_set_number" value={allSets[i+1]?.setNumber ?? 0}>
                     <button formaction="?/move_set_up" class="{i == allSets.length-1 ? "w-full" : "w-1/2"} p-1.5 border-2 border-slate-700 bg-slate-800 rounded-md text-xl flex items-center justify-center" aria-label="Up">
                       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
                         <polyline points="4 17 12 7 20 17" />
@@ -60,7 +69,6 @@
                     </button>
                   {/if}
                   {#if i != allSets.length-1}  
-                    <input hidden name="prev_set_number" value={allSets[i-1]?.setNumber ?? 0}>
                     <button formaction="?/move_set_down" class="{i == 0 ? "w-full" : "w-1/2"} p-1.5 border-2 border-slate-700 bg-slate-800 rounded-md text-xl flex items-center justify-center" aria-label="Down">
                       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
                         <polyline points="4 7 12 18 20 7" />

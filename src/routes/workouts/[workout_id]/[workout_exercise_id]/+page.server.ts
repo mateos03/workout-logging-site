@@ -60,36 +60,51 @@ export const actions = {
 
     throw(redirect(303, `/workouts/${workoutId}`));
   },
-  move_set_up: async ({ request, params }) => {
+  move_set_up: async ({ request }) => {
     const data = await request.formData();
 
     const setId = Number(data.get("set_id"));
-    const setIndex = Number(data.get("set_index"));
+    const prevSetId = Number(data.get("prev_set_id"));
+    const currentSetNumber = Number(data.get("current_set_number"));
     const prevSetNumber = Number(data.get("prev_set_number"));
 
     try{
       await Promise.all([
-        db.update(set).set({ setNumber: setIndex - 1 }).where(eq(set.id, setId)),
-        db.update(set).set({ setNumber: setIndex }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, prevSetNumber)))
+        db.update(set).set({ setNumber: currentSetNumber }).where(eq(set.id, prevSetId)),
+        db.update(set).set({ setNumber: prevSetNumber }).where(eq(set.id, setId))
       ]);
     } catch(error){
       console.log(error);
     }
   },
-  move_set_down: async ({ request, params }) => {
+  move_set_down: async ({ request }) => {
     const data = await request.formData();
 
     const setId = Number(data.get("set_id"));
-    const setIndex = Number(data.get("set_index"));
-    const nextSetNumber = Number(data.get("next_set_number"))
+    const nextSetId = Number(data.get("next_set_id"));
+    const currentSetNumber = Number(data.get("current_set_number"));
+    const nextSetNumber = Number(data.get("next_set_number"));
 
     try{
       await Promise.all([
-        db.update(set).set({ setNumber: setIndex + 1 }).where(eq(set.id, setId)),
-        db.update(set).set({ setNumber: setIndex }).where(and(eq(set.workoutExerciseId, Number(params.workout_exercise_id)), eq(set.setNumber, nextSetNumber)))
+        db.update(set).set({ setNumber: currentSetNumber }).where(eq(set.id, nextSetId)),
+        db.update(set).set({ setNumber: nextSetNumber }).where(eq(set.id, setId))
       ]);
     } catch(error){
       console.log(error);
+    }
+  },
+  save_edited_sets: async ({ request }) => {
+    const data = await request.formData();
+
+    const setId = Number(data.get("set_id"));
+    const setWeight = Number(data.get("set_weight"));
+    const setReps = Number(data.get("set_reps"));
+
+    try{
+      await db.update(set).set({ weight: setWeight, reps: setReps }).where(eq(set.id, setId));
+    } catch(error){
+      console.log(error)
     }
   },
   delete_set: async ({ request }) => {
