@@ -1,7 +1,6 @@
 import { db } from '$lib/server/db/index.js'
 import { exercise, set, workoutExercise } from '$lib/server/db/schema.js'
 import { fail, redirect } from '@sveltejs/kit';
-import { and } from 'drizzle-orm';
 import { eq } from 'drizzle-orm'
 
 export const load = async ({ params }) => {
@@ -39,7 +38,8 @@ export const actions = {
       await db.insert(set).values({workoutExerciseId: workoutExerciseId, setNumber: setNumber, weight: weight, reps: reps});
     } catch(error){
       return fail(500, {
-        message: "Something went wrong"
+        message: "Something went wrong",
+        error: error
       });
     }
   },
@@ -54,7 +54,8 @@ export const actions = {
       ]);
     } catch(error){
       return fail(500, {
-        message_delete: "Something went wrong"
+        message_delete: "Something went wrong",
+        error: error
       });
     }
 

@@ -1,8 +1,8 @@
 import { db } from '$lib/server/db/index.js'
-import { exercise, exerciseTag, set, tag, workout, workoutExercise, type Exercise, type ExerciseTag, type Tag } from '$lib/server/db/schema.js'
+import { exercise, exerciseTag, tag, workout, workoutExercise, type Exercise, type ExerciseTag, type Tag } from '$lib/server/db/schema.js'
 import { getAllFromUserId } from '$lib/server/get.js';
 import { redirect } from '@sveltejs/kit';
-import { and, eq, inArray } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 
 
 export const load = async ({ params, locals }) => {

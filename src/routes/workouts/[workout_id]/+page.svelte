@@ -1,18 +1,19 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import NewExerciseDialog from '$lib/components/dialogs/NewExerciseDialog.svelte';
+    import BigDialogBox from '$lib/components/dialogs/BigDialogBox.svelte';
+  import NewExerciseDialog from '$lib/components/dialogs/BigDialogBox.svelte';
 
-  const { data, form } = $props();
+  const { data } = $props();
   let selectedTag = $state(data.workout.tagId ?? 0);
-  let savedTag = $state(data.workout.tagId ?? 0);
+  let savedTag = $derived(data.workout.tagId ?? 0);
   let dialog = $state<HTMLDialogElement>();
+  let workoutTagForm = $state<HTMLFormElement>();
 
   let exerciseNameSearch = $state<string>("");
   let selectedTagSearch = $state<number>(0);
 
   $effect(() => {
     selectedTag = data.workout.tagId ?? 0;
-    savedTag = data.workout.tagId ?? 0;
   });
 </script>
 
@@ -27,21 +28,18 @@
     <div>Finished</div>
   {:else}
     <div class="border-b pb-4">
-      <form method="POST" class="flex justify-between items-center mt-4" use:enhance>
-        <div class="text-2xl mr-5">Type: </div>
-        <select name="workout_tag" bind:value={selectedTag} class="text-2xl bg-slate-800 rounded-md mr-2">
+      <form bind:this={workoutTagForm} method="POST" action="?/change_workout_tag" class="flex justify-between items-center mt-4" use:enhance>
+        <select name="workout_tag" bind:value={selectedTag} onchange={() => workoutTagForm?.requestSubmit()} class="text-2xl bg-slate-800 rounded-md w-full">
           <option value=0></option>
           {#each data.tags as tag}
             <option value={tag.id}>{tag.name} {tag.id == savedTag ? "✓" : ""}</option>
           {/each}
         </select>
-        <button formaction="?/change_workout_tag" class="border rounded-md px-2.5 py-2 bg-green-800 text-xl">Submit</button>
       </form>
       <button onclick={() => dialog?.showModal()} class="border bg-green-800 rounded-md text-3xl w-full mt-4 py-2">New Exercise</button>
     </div>
-    <NewExerciseDialog bind:dialog>
+    <BigDialogBox bind:dialog title="Search">
       <form method="POST" action="?/new_exercise" use:enhance>
-        <div class="text-3xl pb-2">Search</div>
         <input class="bg-slate-800 w-full rounded-md text-2xl pb-1 mb-2" placeholder="Exercise Name" bind:value={exerciseNameSearch}/>
         <div class="border-b pb-3 mb-1">
           <select class="bg-slate-800 w-full rounded-md text-2xl border-b" bind:value={selectedTagSearch}>
@@ -57,7 +55,7 @@
           <button value={exercise.id} name="exercise_id" class="text-2xl py-3 my-3 block border bg-slate-800 rounded-md p-2 w-full">{exercise.name}</button>
         {/each}
       </form>
-    </NewExerciseDialog>
+    </BigDialogBox>
     <div>
       {#each data.workoutExercises as workoutExercise}
         <a class="block w-full py-4 text-3xl text-center border rounded-md mt-4 bg-slate-800" href="/workouts/{data.workoutId}/{String(workoutExercise.id)}">{workoutExercise.name}</a>
